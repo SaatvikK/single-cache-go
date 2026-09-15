@@ -2,7 +2,7 @@ package main
 
 import (
 	//"fmt"
-	//"single-cache/cache"
+	"single-cache/cache"
 	"single-cache/server"
 )
 
@@ -17,7 +17,14 @@ import (
 
 func main() {
 	// make cache
-	//C := makecache(5)
+	C := cache.Cache{
+		Items:    []int{37, 63, 51, 95, 26},
+		Times:    []int{1, 2, 3, 4, 5},
+		Capacity: 5,
+		Server:   "http://localhost:4000",
+	}
 
-	server.RunServer()
+	go server.RunServer()
+
+	C.CacheServer()
 }

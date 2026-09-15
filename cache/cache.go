@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 const Empty = 0
@@ -20,7 +21,7 @@ type Cache struct {
 	Items    []int
 	Times    []int
 	Capacity int
-	server   string
+	Server   string
 }
 
 func (C *Cache) eval(item int) bool {
@@ -90,12 +91,14 @@ func (C *Cache) update(admit int, evict int) (bool, error) {
 }
 
 func (C *Cache) fetch(item int) (int, error) {
-	endp := C.server + fmt.Sprintf("/fetch/%s", item)
-
+	endp := C.Server + fmt.Sprintf("/fetch/%d", item)
+	fmt.Println(endp)
 	resp, err := http.Get(endp)
 	if err != nil {
 		log.Fatalln(err)
 	}
+
+	fmt.Println("hiiiiiiiiii")
 
 	//We Read the response body on the line below.
 	body, err := io.ReadAll(resp.Body)
@@ -107,12 +110,12 @@ func (C *Cache) fetch(item int) (int, error) {
 	sb := string(body)
 
 	if sb == "not found" {
-		return Empty, fmt.Errorf("Could not fetch item from B.")
+		return Empty, fmt.Errorf("Could not request item from cache.")
 	}
 
-	fetched, err := strconv.Atoi(s)
+	fetched, err := strconv.Atoi(sb)
 	if err != nil {
-		panic(err)
+		log.Fatalln(err)
 	}
 
 	return fetched, nil
@@ -125,13 +128,76 @@ func (C *Cache) cacheDump(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, C.Times)
 }
 
-func (C *Cache) cacheServer() {
+func (C *Cache) fetchUpdateHandler(item int) error {
+	fetched, err := C.fetch(item)
+	if err != nil {
+		return err
+	}
+
+	victim := LCEpol(C.Capacity, C.Times)
+	vicItem := C.Items[victim]
+
+	out, err := C.update(fetched, vicItem)
+	if err != nil {
+		return err
+	}
+
+	log.Printf("Updated cache: admitted %d, evicted %d, code %t", fetched, vicItem, out)
+	return nil
+}
+
+func (C *Cache) makeRequest(w http.ResponseWriter, r *http.Request) {
+	var s string = mux.Vars(r)["item"]
+	flag := false
+	foundItem, foundTime := 0, 0
+
+	item, err := strconv.Atoi(s)
+	if err != nil {
+		panic(err)
+	}
+
+	for i := 0; i < C.Capacity; i++ {
+		fmt.Println(("for loopin"))
+		if item == C.Items[i] {
+			fmt.Println("Item found")
+			flag = true
+			foundItem = C.Items[i]
+			foundTime = C.Times[i]
+			break
+		}
+	}
+
+	type cacheres struct {
+		item    int
+		time    int
+		err     string
+		outcome string
+	}
+
+	res := cacheres{
+		item:    foundItem,
+		time:    foundTime,
+		err:     "null",
+		outcome: "success",
+	}
+
+	if flag == false {
+		res.outcome = "not found"
+		fmt.Println("Item not found, sending fetch request now.")
+		C.fetchUpdateHandler(item)
+
+	}
+
+	fmt.Fprint(w, res)
+}
+
+func (C *Cache) CacheServer() {
 	var port string = "4040"
 
 	fmt.Println("cache server started")
 
 	r := mux.NewRouter()
-	r.HandleFunc("/c-dump", B.dump).Methods(http.MethodGet)
-	r.HandleFunc("/request/{item}", B.fetchItem).Methods(http.MethodGet)
+	r.HandleFunc("/c-dump", C.cacheDump).Methods(http.MethodGet)
+	r.HandleFunc("/request/{item}", C.makeRequest).Methods(http.MethodGet)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), r))
 }
