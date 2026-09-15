@@ -19,7 +19,7 @@ func remove(s []int, i int) []int {
 
 type Cache struct {
 	Items    []int
-	Times    []int
+	Times    []time.Time
 	Capacity int
 	Server   string
 }
@@ -59,12 +59,12 @@ func (C *Cache) evictItem(item int) (int, bool) {
 	return 0, false
 }
 
-func (C *Cache) admitItem(item int, time int, idx int) bool {
+func (C *Cache) admitItem(item int, idx int) bool {
 	if idx >= len(C.Items) || idx < 0 {
 		return false
 	}
 	C.Items[idx] = item
-	C.Times[idx] = time
+	C.Times[idx] = time.Now()
 	return true
 }
 
@@ -82,7 +82,7 @@ func (C *Cache) update(admit int, evict int) (bool, error) {
 		}
 	}
 
-	admitOut = C.admitItem(admit, TauVal, idx)
+	admitOut = C.admitItem(admit, idx)
 	if admitOut == false {
 		return false, fmt.Errorf("Failed to admit item.")
 	}
@@ -134,7 +134,7 @@ func (C *Cache) fetchUpdateHandler(item int) error {
 		return err
 	}
 
-	victim := LCEpol(C.Capacity, C.Times)
+	victim := LRUpol(C.Capacity, C.Items, C.Times)
 	vicItem := C.Items[victim]
 
 	out, err := C.update(fetched, vicItem)
@@ -162,7 +162,8 @@ func (C *Cache) makeRequest(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("Item found")
 			flag = true
 			foundItem = C.Items[i]
-			foundTime = C.Times[i]
+			foundTime = int(C.Times[i].Unix())
+			C.Times[i] = time.Now()
 			break
 		}
 	}
