@@ -1,0 +1,123 @@
+2026/09/23 14:24:16 main.go:26: started
+2026/09/23 14:24:16 main.go:42: cache initialised: capacity 5, backing store http://localhost:4000, items [37 63 51 95 26]
+2026/09/23 14:24:16 cache.go:220: cache server started on :4040
+2026/09/23 14:24:16 server.go:55: server started
+2026/09/23 14:24:16 server.go:64: backing store on :4000, size 7: [37 63 51 95 26 24 75]
+2026/09/23 14:24:17 server.go:34: backing store: fetch request for item 37
+2026/09/23 14:24:17 server.go:37: backing store: item 37 found at index 0
+2026/09/23 14:24:17 server.go:34: backing store: fetch request for item 63
+2026/09/23 14:24:17 server.go:37: backing store: item 63 found at index 1
+2026/09/23 14:24:17 server.go:34: backing store: fetch request for item 24
+2026/09/23 14:24:17 server.go:37: backing store: item 24 found at index 5
+2026/09/23 14:24:17 server.go:34: backing store: fetch request for item 37
+2026/09/23 14:24:17 server.go:37: backing store: item 37 found at index 0
+2026/09/23 14:24:17 server.go:34: backing store: fetch request for item 75
+2026/09/23 14:24:17 server.go:37: backing store: item 75 found at index 6
+2026/09/23 14:24:17 server.go:34: backing store: fetch request for item 51
+2026/09/23 14:24:17 server.go:37: backing store: item 51 found at index 2
+2026/09/23 14:24:17 server.go:34: backing store: fetch request for item 24
+2026/09/23 14:24:17 server.go:37: backing store: item 24 found at index 5
+2026/09/23 14:24:17 server.go:34: backing store: fetch request for item 95
+2026/09/23 14:24:17 server.go:37: backing store: item 95 found at index 3
+2026/09/23 14:24:17 server.go:34: backing store: fetch request for item 26
+2026/09/23 14:24:17 server.go:37: backing store: item 26 found at index 4
+2026/09/23 14:24:17 server.go:34: backing store: fetch request for item 37
+2026/09/23 14:24:17 server.go:37: backing store: item 37 found at index 0
+2026/09/23 14:24:17 cache.go:172: cache: request for item 37
+2026/09/23 14:24:17 cache.go:206: cache: HIT item 37 at index 0, last requested Jan  1 01:00:01.000
+2026/09/23 14:24:17 cache.go:172: cache: request for item 63
+2026/09/23 14:24:17 cache.go:206: cache: HIT item 63 at index 0, last requested Jan  1 01:00:02.000
+2026/09/23 14:24:17 cache.go:172: cache: request for item 24
+2026/09/23 14:24:17 cache.go:200: cache: MISS item 24, fetching from backing store
+2026/09/23 14:24:17 cache.go:100: cache: fetching item 24 from http://localhost:4000/fetch/24
+2026/09/23 14:24:17 server.go:34: backing store: fetch request for item 24
+2026/09/23 14:24:17 server.go:37: backing store: item 24 found at index 5
+2026/09/23 14:24:17 cache.go:107: cache: backing store replied 200 OK for item 24
+2026/09/23 14:24:17 policies.go:22: cache: LRU victim is item 51 (index 2), last requested at 1970-01-01 01:00:03.000
+2026/09/23 14:24:17 policies.go:23: cache: times at eviction:
+2026/09/23 14:24:17 policies.go:25:   index 0: item 37 at 2026-09-23 14:24:17.035
+2026/09/23 14:24:17 policies.go:25:   index 1: item 63 at 2026-09-23 14:24:17.035
+2026/09/23 14:24:17 policies.go:25:   index 2: item 51 at 1970-01-01 01:00:03.000
+2026/09/23 14:24:17 policies.go:25:   index 3: item 95 at 1970-01-01 01:00:04.000
+2026/09/23 14:24:17 policies.go:25:   index 4: item 26 at 1970-01-01 01:00:05.000
+2026/09/23 14:24:17 cache.go:93: cache: admitted item 24 at index 2 (free slot: false)
+2026/09/23 14:24:17 cache.go:154: Updated cache: admitted 24, evicted 51, code true
+2026/09/23 14:24:17 cache.go:172: cache: request for item 37
+2026/09/23 14:24:17 cache.go:206: cache: HIT item 37 at index 0, last requested Sep 23 14:24:17.035
+2026/09/23 14:24:17 cache.go:172: cache: request for item 75
+2026/09/23 14:24:17 cache.go:200: cache: MISS item 75, fetching from backing store
+2026/09/23 14:24:17 cache.go:100: cache: fetching item 75 from http://localhost:4000/fetch/75
+2026/09/23 14:24:17 server.go:34: backing store: fetch request for item 75
+2026/09/23 14:24:17 server.go:37: backing store: item 75 found at index 6
+2026/09/23 14:24:17 cache.go:107: cache: backing store replied 200 OK for item 75
+2026/09/23 14:24:17 policies.go:22: cache: LRU victim is item 95 (index 3), last requested at 1970-01-01 01:00:04.000
+2026/09/23 14:24:17 policies.go:23: cache: times at eviction:
+2026/09/23 14:24:17 policies.go:25:   index 0: item 37 at 2026-09-23 14:24:17.037
+2026/09/23 14:24:17 policies.go:25:   index 1: item 63 at 2026-09-23 14:24:17.035
+2026/09/23 14:24:17 policies.go:25:   index 2: item 24 at 2026-09-23 14:24:17.036
+2026/09/23 14:24:17 policies.go:25:   index 3: item 95 at 1970-01-01 01:00:04.000
+2026/09/23 14:24:17 policies.go:25:   index 4: item 26 at 1970-01-01 01:00:05.000
+2026/09/23 14:24:17 cache.go:93: cache: admitted item 75 at index 3 (free slot: false)
+2026/09/23 14:24:17 cache.go:154: Updated cache: admitted 75, evicted 95, code true
+2026/09/23 14:24:17 cache.go:172: cache: request for item 51
+2026/09/23 14:24:17 cache.go:200: cache: MISS item 51, fetching from backing store
+2026/09/23 14:24:17 cache.go:100: cache: fetching item 51 from http://localhost:4000/fetch/51
+2026/09/23 14:24:17 server.go:34: backing store: fetch request for item 51
+2026/09/23 14:24:17 server.go:37: backing store: item 51 found at index 2
+2026/09/23 14:24:17 cache.go:107: cache: backing store replied 200 OK for item 51
+2026/09/23 14:24:17 policies.go:22: cache: LRU victim is item 26 (index 4), last requested at 1970-01-01 01:00:05.000
+2026/09/23 14:24:17 policies.go:23: cache: times at eviction:
+2026/09/23 14:24:17 policies.go:25:   index 0: item 37 at 2026-09-23 14:24:17.037
+2026/09/23 14:24:17 policies.go:25:   index 1: item 63 at 2026-09-23 14:24:17.035
+2026/09/23 14:24:17 policies.go:25:   index 2: item 24 at 2026-09-23 14:24:17.036
+2026/09/23 14:24:17 policies.go:25:   index 3: item 75 at 2026-09-23 14:24:17.037
+2026/09/23 14:24:17 policies.go:25:   index 4: item 26 at 1970-01-01 01:00:05.000
+2026/09/23 14:24:17 cache.go:93: cache: admitted item 51 at index 4 (free slot: false)
+2026/09/23 14:24:17 cache.go:154: Updated cache: admitted 51, evicted 26, code true
+2026/09/23 14:24:17 cache.go:172: cache: request for item 24
+2026/09/23 14:24:17 cache.go:206: cache: HIT item 24 at index 0, last requested Sep 23 14:24:17.036
+2026/09/23 14:24:17 cache.go:172: cache: request for item 95
+2026/09/23 14:24:17 cache.go:200: cache: MISS item 95, fetching from backing store
+2026/09/23 14:24:17 cache.go:100: cache: fetching item 95 from http://localhost:4000/fetch/95
+2026/09/23 14:24:17 server.go:34: backing store: fetch request for item 95
+2026/09/23 14:24:17 server.go:37: backing store: item 95 found at index 3
+2026/09/23 14:24:17 cache.go:107: cache: backing store replied 200 OK for item 95
+2026/09/23 14:24:17 policies.go:22: cache: LRU victim is item 63 (index 1), last requested at 2026-09-23 14:24:17.035
+2026/09/23 14:24:17 policies.go:23: cache: times at eviction:
+2026/09/23 14:24:17 policies.go:25:   index 0: item 37 at 2026-09-23 14:24:17.037
+2026/09/23 14:24:17 policies.go:25:   index 1: item 63 at 2026-09-23 14:24:17.035
+2026/09/23 14:24:17 policies.go:25:   index 2: item 24 at 2026-09-23 14:24:17.038
+2026/09/23 14:24:17 policies.go:25:   index 3: item 75 at 2026-09-23 14:24:17.037
+2026/09/23 14:24:17 policies.go:25:   index 4: item 51 at 2026-09-23 14:24:17.038
+2026/09/23 14:24:17 cache.go:93: cache: admitted item 95 at index 1 (free slot: false)
+2026/09/23 14:24:17 cache.go:154: Updated cache: admitted 95, evicted 63, code true
+2026/09/23 14:24:17 cache.go:172: cache: request for item 26
+2026/09/23 14:24:17 cache.go:200: cache: MISS item 26, fetching from backing store
+2026/09/23 14:24:17 cache.go:100: cache: fetching item 26 from http://localhost:4000/fetch/26
+2026/09/23 14:24:17 server.go:34: backing store: fetch request for item 26
+2026/09/23 14:24:17 server.go:37: backing store: item 26 found at index 4
+2026/09/23 14:24:17 cache.go:107: cache: backing store replied 200 OK for item 26
+2026/09/23 14:24:17 policies.go:22: cache: LRU victim is item 37 (index 0), last requested at 2026-09-23 14:24:17.037
+2026/09/23 14:24:17 policies.go:23: cache: times at eviction:
+2026/09/23 14:24:17 policies.go:25:   index 0: item 37 at 2026-09-23 14:24:17.037
+2026/09/23 14:24:17 policies.go:25:   index 1: item 95 at 2026-09-23 14:24:17.039
+2026/09/23 14:24:17 policies.go:25:   index 2: item 24 at 2026-09-23 14:24:17.038
+2026/09/23 14:24:17 policies.go:25:   index 3: item 75 at 2026-09-23 14:24:17.037
+2026/09/23 14:24:17 policies.go:25:   index 4: item 51 at 2026-09-23 14:24:17.038
+2026/09/23 14:24:17 cache.go:93: cache: admitted item 26 at index 0 (free slot: false)
+2026/09/23 14:24:17 cache.go:154: Updated cache: admitted 26, evicted 37, code true
+2026/09/23 14:24:17 cache.go:172: cache: request for item 37
+2026/09/23 14:24:17 cache.go:200: cache: MISS item 37, fetching from backing store
+2026/09/23 14:24:17 cache.go:100: cache: fetching item 37 from http://localhost:4000/fetch/37
+2026/09/23 14:24:17 server.go:34: backing store: fetch request for item 37
+2026/09/23 14:24:17 server.go:37: backing store: item 37 found at index 0
+2026/09/23 14:24:17 cache.go:107: cache: backing store replied 200 OK for item 37
+2026/09/23 14:24:17 policies.go:22: cache: LRU victim is item 75 (index 3), last requested at 2026-09-23 14:24:17.037
+2026/09/23 14:24:17 policies.go:23: cache: times at eviction:
+2026/09/23 14:24:17 policies.go:25:   index 0: item 26 at 2026-09-23 14:24:17.040
+2026/09/23 14:24:17 policies.go:25:   index 1: item 95 at 2026-09-23 14:24:17.039
+2026/09/23 14:24:17 policies.go:25:   index 2: item 24 at 2026-09-23 14:24:17.038
+2026/09/23 14:24:17 policies.go:25:   index 3: item 75 at 2026-09-23 14:24:17.037
+2026/09/23 14:24:17 policies.go:25:   index 4: item 51 at 2026-09-23 14:24:17.038
+2026/09/23 14:24:17 cache.go:93: cache: admitted item 37 at index 3 (free slot: false)
+2026/09/23 14:24:17 cache.go:154: Updated cache: admitted 37, evicted 75, code true

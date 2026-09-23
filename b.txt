@@ -1,0 +1,10 @@
+Item 37 took 1162268 ns to be fetched from B.
+Item 63 took 492845 ns to be fetched from B.
+Item 24 took 430014 ns to be fetched from B.
+Item 37 took 610137 ns to be fetched from B.
+Item 75 took 385291 ns to be fetched from B.
+Item 51 took 409424 ns to be fetched from B.
+Item 24 took 367448 ns to be fetched from B.
+Item 95 took 427413 ns to be fetched from B.
+Item 26 took 360472 ns to be fetched from B.
+Item 37 took 375617 ns to be fetched from B.

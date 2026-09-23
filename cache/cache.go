@@ -1,13 +1,15 @@
 package cache
 
 import (
+	"encoding/json"
 	"fmt"
-	"github.com/gorilla/mux"
 	"io"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/gorilla/mux"
 )
 
 const Empty = 0
@@ -87,18 +89,22 @@ func (C *Cache) update(admit int, evict int) (bool, error) {
 		return false, fmt.Errorf("Failed to admit item.")
 	}
 
+	// ## added by claude because i wasn't logging which slot the admitted item went into
+	log.Printf("cache: admitted item %d at index %d (free slot: %t)", admit, idx, outEmpty)
 	return true, nil
 }
 
 func (C *Cache) fetch(item int) (int, error) {
 	endp := C.Server + fmt.Sprintf("/fetch/%d", item)
-	fmt.Println(endp)
+	// ## added by claude because i was printing the bare endpoint with fmt.Println
+	log.Printf("cache: fetching item %d from %s", item, endp)
 	resp, err := http.Get(endp)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	fmt.Println("hiiiiiiiiii")
+	// ## added by claude because i was printing "hiiiiiiiiii" here
+	log.Printf("cache: backing store replied %s for item %d", resp.Status, item)
 
 	//We Read the response body on the line below.
 	body, err := io.ReadAll(resp.Body)
@@ -110,6 +116,8 @@ func (C *Cache) fetch(item int) (int, error) {
 	sb := string(body)
 
 	if sb == "not found" {
+		// ## added by claude because i wasn't logging a backing-store miss
+		log.Printf("cache: backing store does not have item %d", item)
 		return Empty, fmt.Errorf("Could not request item from cache.")
 	}
 
@@ -123,7 +131,8 @@ func (C *Cache) fetch(item int) (int, error) {
 
 func (C *Cache) cacheDump(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
-	fmt.Println(r)
+	// ## added by claude because i was printing this with fmt so it never reached the log file
+	log.Println(r)
 	fmt.Fprint(w, C.Items)
 	fmt.Fprint(w, C.Times)
 }
@@ -149,53 +158,66 @@ func (C *Cache) fetchUpdateHandler(item int) error {
 func (C *Cache) makeRequest(w http.ResponseWriter, r *http.Request) {
 	var s string = mux.Vars(r)["item"]
 	flag := false
-	foundItem, foundTime := 0, 0
+	foundItem, foundTime := 0, time.Now()
+	foundIdx := 0
 
 	item, err := strconv.Atoi(s)
 	if err != nil {
+		// ## added by claude because i was panicking without saying what the bad input was
+		log.Printf("cache: bad item %q in %s: %v", s, r.URL.Path, err)
 		panic(err)
 	}
 
+	// ## added by claude because i was printing "for loopin" every iteration and "Item found" with no item or index
+	log.Printf("cache: request for item %d", item)
 	for i := 0; i < C.Capacity; i++ {
-		fmt.Println(("for loopin"))
 		if item == C.Items[i] {
-			fmt.Println("Item found")
 			flag = true
 			foundItem = C.Items[i]
-			foundTime = int(C.Times[i].Unix())
+			foundTime = C.Times[i]
 			C.Times[i] = time.Now()
 			break
 		}
 	}
 
 	type cacheres struct {
-		item    int
-		time    int
-		err     string
-		outcome string
+		Item    int    `json:"item"`
+		Time    int    `json:"time"`
+		Err     string `json:"err"`
+		Outcome string `json:"outcome"`
 	}
 
 	res := cacheres{
-		item:    foundItem,
-		time:    foundTime,
-		err:     "null",
-		outcome: "success",
+		Item:    foundItem,
+		Time:    int(foundTime.Unix()),
+		Err:     "null",
+		Outcome: "hit",
 	}
 
 	if flag == false {
-		res.outcome = "not found"
-		fmt.Println("Item not found, sending fetch request now.")
-		C.fetchUpdateHandler(item)
+		res.Outcome = "miss"
+		// ## added by claude because i was printing the miss with fmt and dropping fetchUpdateHandler's error
+		log.Printf("cache: MISS item %d, fetching from backing store", item)
+		if err := C.fetchUpdateHandler(item); err != nil {
+			log.Printf("cache: fetch/update for item %d failed: %v", item, err)
+		}
 
+	} else {
+		log.Printf("cache: HIT item %d at index %d, last requested %s", foundItem, foundIdx, foundTime.Format(time.StampMilli))
 	}
 
-	fmt.Fprint(w, res)
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(res); err != nil {
+		log.Println(err)
+	}
+
 }
 
 func (C *Cache) CacheServer() {
 	var port string = "4040"
 
-	fmt.Println("cache server started")
+	// ## added by claude because i was printing this with fmt so it never reached the log file
+	log.Printf("cache server started on :%s", port)
 
 	r := mux.NewRouter()
 	r.HandleFunc("/c-dump", C.cacheDump).Methods(http.MethodGet)

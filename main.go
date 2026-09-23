@@ -4,20 +4,32 @@ import (
 	//"fmt"
 	"single-cache/cache"
 	"single-cache/server"
+
 	// ## added by claude because i needed time for the Times values below
+	"log"
+	"os"
 	"time"
 )
 
-// func makecache(size int) *cache.Cache {
-// 	C := cache.Cache{
-// 		Items: make([]int, size),
-// 		Times: make([]int, size),
-// 	}
+func setLog() {
+	// ## added by claude because i was appending with O_APPEND, so old runs piled up in the file
+	f, err := os.OpenFile("logfile.log", os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0o644)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// ## added by claude because i was defer-closing f here, which shut the file as soon as setLog returned
+	// f now stays open for the life of the process
 
-// 	return &C
-// }
+	log.SetOutput(f)
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
+	log.Println("started")
+}
 
 func main() {
+
+	setLog()
+
 	// make cache
 	C := cache.Cache{
 		// ## added by claude because i was starting the cache empty
@@ -26,8 +38,13 @@ func main() {
 		Capacity: 5,
 		Server:   "http://localhost:4000",
 	}
+	// ## added by claude because i wasn't logging the starting cache state
+	log.Printf("cache initialised: capacity %d, backing store %s, items %v", C.Capacity, C.Server, C.Items)
 
 	go server.RunServer()
+	go C.CacheServer()
 
-	C.CacheServer()
+	time.Sleep(1 * time.Second)
+
+	harnessMain("http://localhost:4000", "http://localhost:4040")
 }

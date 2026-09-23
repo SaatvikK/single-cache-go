@@ -1,7 +1,7 @@
 package cache
 
 import (
-	"fmt"
+	"log"
 	"time"
 )
 
@@ -17,11 +17,12 @@ func LRUpol(cap int, items []int, times []time.Time) int {
 		}
 	}
 	// ## added by claude because i was printing raw time.Time values with %d and no newline
+	// ## added by claude because these were fmt prints so they never reached the log file
 	const layout = "2006-01-02 15:04:05.000"
-	fmt.Printf("Cached item %d (index %d) is the LRU-item, last requested at %s\n", items[leastRecent], leastRecent, times[leastRecent].Format(layout))
-	fmt.Println("Cache times:")
+	log.Printf("cache: LRU victim is item %d (index %d), last requested at %s", items[leastRecent], leastRecent, times[leastRecent].Format(layout))
+	log.Println("cache: times at eviction:")
 	for i := range times {
-		fmt.Printf("  index %d: item %d at %s\n", i, items[i], times[i].Format(layout))
+		log.Printf("  index %d: item %d at %s", i, items[i], times[i].Format(layout))
 	}
 	return leastRecent
 }
